@@ -4,8 +4,18 @@ using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+public enum PlayerState
+{
+    Idle,
+    Interact,
+    Move
+};
+
 public class PlayerBehavior : MonoBehaviour
 {
+
+    public PlayerState myState {  get; private set; }
+
     CharacterController myController = null;
     PlayerInput input = null;
 

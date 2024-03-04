@@ -2,11 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public sealed class Interact : PlayerSelector
+public sealed class Interact : ActionSelelector<PlayerBehavior>
 {
-    public Interact(PlayerBehavior player) : base(player)
-    {
-    }
+    public Interact(PlayerBehavior player) : base(player) { }
 
     public override void OnStateEnter()
     {
@@ -23,7 +21,7 @@ public sealed class Interact : PlayerSelector
     }
     public override void OnStateExit()
     {
-        player.ChangeNode(playerState.Idle);
+        behavior.ChangeNode(playerState.Idle);
     }
 
 }

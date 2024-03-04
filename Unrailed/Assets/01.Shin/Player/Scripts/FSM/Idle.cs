@@ -12,14 +12,13 @@ public sealed class Idle : PlayerSelector
 
     public override void OnStateEnter()
     {
-        Debug.Log("진입");
+
     }
 
     public override void OnStateUpdate()
     {
-        Debug.Log("시간 : " + time);
-        player.Move();
         time += Time.deltaTime;
+        behavior.Move();
 
         if(time >= 5f)
         {
@@ -30,7 +29,7 @@ public sealed class Idle : PlayerSelector
 
     public override void OnStateExit()
     {        
-        player.ChangeNode(playerState.Interact);
+        behavior.ChangeNode(playerState.Interact);
     }
 
 }

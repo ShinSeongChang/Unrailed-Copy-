@@ -10,20 +10,25 @@ public enum playerState
     Stop
 }
 
-public class PlayerBehavior : FSM
+public class PlayerBehavior : FSM<playerState>
 {
-    PlayerSelector playerAction;
-    Dictionary<playerState, PlayerSelector> actionNode = new Dictionary<playerState, PlayerSelector>();
+    public ActionSelelector<PlayerBehavior> playerAction;
+    Dictionary<playerState, ActionSelelector<PlayerBehavior>> actionNode = 
+        new Dictionary<playerState, ActionSelelector<PlayerBehavior>>();
     CharacterController myController = null;
     PlayerInput input = null;
+
+    #region FSMState
 
     Idle act1 = null;
     Interact act2 = null;
 
+    #endregion
+
     private Vector3 moveValue = Vector3.zero;
 
-    [Space]
 
+    [Space]
     [Header("플레이어 이동 관련")]
     [Range(1f, 20f)]
     public float speed = default;
@@ -44,6 +49,11 @@ public class PlayerBehavior : FSM
         input.Enable();
         input.Player.Move3D.performed += OnMove;
         input.Player.Move3D.canceled += CancelMove;
+    }
+
+    private void Update()
+    {
+        playerAction.OnStateUpdate();
     }
         
     private void OnDisable()
@@ -89,18 +99,12 @@ public class PlayerBehavior : FSM
         playerAction = actionNode[playerState.Idle];
     }
 
-    private void Update()
-    {
-        playerAction.OnStateUpdate();
-    }
-
     #region PublicResponsibility
 
-    public void ChangeNode(playerState targetNode)
+    public override void ChangeNode(playerState targetNode)
     {
-        Debug.Log("전달 값 : " + targetNode);
         playerAction = actionNode[targetNode];
-        actionNode[targetNode].OnStateEnter();
+        playerAction.OnStateEnter();
     }
 
     #endregion

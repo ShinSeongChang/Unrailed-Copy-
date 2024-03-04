@@ -2,31 +2,35 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Idle : PlayerBaseNode
+public sealed class Idle : PlayerSelector
 {
+    float time = 0;
 
-    float time = default;
-    public override void OnStateEnter(FSMTest stateManager)
+    public Idle(PlayerBehavior player) : base(player)
     {
-        Debug.Log("게임 진입");
-        time = 0f;
     }
 
-
-    public override void OnStateUpdate(FSMTest stateManager)
+    public override void OnStateEnter()
     {
+        Debug.Log("진입");
+    }
+
+    public override void OnStateUpdate()
+    {
+        Debug.Log("시간 : " + time);
+        player.Move();
         time += Time.deltaTime;
-        Debug.Log("시간경과 : " + time);
 
         if(time >= 5f)
         {
-            time = 0f;
-            stateManager.ChangedState(PlayerState.Interact);
+            time = 0;
+            OnStateExit();
         }
     }
-    public override void OnStateExit(FSMTest stateManager)
-    {
-        Debug.Log("5초 경과, Idle 탈출");
-        stateManager.ChangedState(PlayerState.Interact);
+
+    public override void OnStateExit()
+    {        
+        player.ChangeNode(playerState.Interact);
     }
+
 }

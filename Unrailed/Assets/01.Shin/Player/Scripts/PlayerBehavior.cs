@@ -1,23 +1,24 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
-public enum PlayerState
+public enum playerState
 {
     Idle,
     Interact,
-    Move
-};
+    Stop
+}
 
-public class PlayerBehavior : MonoBehaviour
+public class PlayerBehavior : FSM
 {
-
-    public PlayerState myState {  get; private set; }
-
+    PlayerSelector playerAction;
+    Dictionary<playerState, PlayerSelector> actionNode = new Dictionary<playerState, PlayerSelector>();
     CharacterController myController = null;
     PlayerInput input = null;
+
+    Idle act1 = null;
+    Interact act2 = null;
 
     private Vector3 moveValue = Vector3.zero;
 
@@ -33,6 +34,8 @@ public class PlayerBehavior : MonoBehaviour
     {
         myController = GetComponent<CharacterController>();
         input = new PlayerInput();
+        CreateNode();
+        playerAction.OnStateEnter();
     }
 
     private void OnEnable()
@@ -41,11 +44,6 @@ public class PlayerBehavior : MonoBehaviour
         input.Enable();
         input.Player.Move3D.performed += OnMove;
         input.Player.Move3D.canceled += CancelMove;
-    }
-
-    private void FixedUpdate()
-    {
-        Move();
     }
         
     private void OnDisable()
@@ -66,7 +64,7 @@ public class PlayerBehavior : MonoBehaviour
         moveValue = Vector3.zero;
     }
 
-    private void Move()
+    public void Move()
     {
         // 플레이어 키입력에 따른 이동방향 결정
         myController.Move(moveValue * speed * Time.deltaTime);
@@ -80,8 +78,30 @@ public class PlayerBehavior : MonoBehaviour
         }
     }
 
+    protected override void CreateNode()
+    {
+        act1 = new Idle(this);
+        act2 = new Interact(this);
+
+        actionNode.Add(playerState.Idle, act1);
+        actionNode.Add(playerState.Interact, act2);
+
+        playerAction = actionNode[playerState.Idle];
+    }
+
+    private void Update()
+    {
+        playerAction.OnStateUpdate();
+    }
+
     #region PublicResponsibility
 
+    public void ChangeNode(playerState targetNode)
+    {
+        Debug.Log("전달 값 : " + targetNode);
+        playerAction = actionNode[targetNode];
+        actionNode[targetNode].OnStateEnter();
+    }
 
     #endregion
 }

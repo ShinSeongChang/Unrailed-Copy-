@@ -8,7 +8,7 @@ public sealed class Interact : ActionSelelector<PlayerBehavior>
 
     public override void OnStateEnter()
     {
-        Debug.Log("µÎ¹øÂ° ½ºÅ×ÀÌÆ® ÁøÀÔ");
+        Debug.Log("ë‘ë²ˆì§¸ ìŠ¤í…Œì´íŠ¸ ì§„ì…");
     }
 
 

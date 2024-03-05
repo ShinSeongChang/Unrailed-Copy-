@@ -29,7 +29,7 @@ public class PlayerBehavior : FSM<playerState>
 
 
     [Space]
-    [Header("ÇÃ·¹ÀÌ¾î ÀÌµ¿ °ü·Ã")]
+    [Header("í”Œë ˆì´ì–´ ì´ë™ ê´€ë ¨")]
     [Range(1f, 20f)]
     public float speed = default;
     [Range(360, 720)]
@@ -45,9 +45,10 @@ public class PlayerBehavior : FSM<playerState>
 
     private void OnEnable()
     {
-        // InputSystem È°¼ºÈ­
+        // InputSystem í™œì„±í™”
         input.Enable();
         input.Player.Move3D.performed += OnMove;
+        input.Player.Active.performed += Active;
         input.Player.Move3D.canceled += CancelMove;
     }
 
@@ -58,9 +59,10 @@ public class PlayerBehavior : FSM<playerState>
         
     private void OnDisable()
     {
-        // InputSystem ºñÈ°¼ºÈ­
+        // InputSystem ë¹„í™œì„±í™”
         input.Disable();
         input.Player.Move3D.performed -= OnMove;
+        input.Player.Active.performed += Active;
         input.Player.Move3D.canceled -= CancelMove;
     }
 
@@ -76,13 +78,13 @@ public class PlayerBehavior : FSM<playerState>
 
     public void Move()
     {
-        // ÇÃ·¹ÀÌ¾î Å°ÀÔ·Â¿¡ µû¸¥ ÀÌµ¿¹æÇâ °áÁ¤
+        // í”Œë ˆì´ì–´ í‚¤ì…ë ¥ì— ë”°ë¥¸ ì´ë™ë°©í–¥ ê²°ì •
         myController.Move(moveValue * speed * Time.deltaTime);
 
-        // ÇÃ·¹ÀÌ¾î ÀÌµ¿¿¡ µû¸¥ È¸Àü¹æÇâ
+        // í”Œë ˆì´ì–´ ì´ë™ì— ë”°ë¥¸ íšŒì „ë°©í–¥
         if (moveValue != Vector3.zero)
         {
-            // TODO : °¢ ÄõÅÍ´Ï¾ğ ÇÔ¼ö ±â´É ÆÄ¾ÇÇÏ±â
+            // TODO : ê° ì¿¼í„°ë‹ˆì–¸ í•¨ìˆ˜ ê¸°ëŠ¥ íŒŒì•…í•˜ê¸°
             Quaternion rotate = Quaternion.LookRotation(moveValue.normalized, Vector3.up);
             transform.rotation = Quaternion.RotateTowards(transform.rotation, rotate, Time.deltaTime * rotationSpeed);
         }
@@ -105,6 +107,11 @@ public class PlayerBehavior : FSM<playerState>
     {
         playerAction = actionNode[targetNode];
         playerAction.OnStateEnter();
+    }
+
+    public void Active(InputAction.CallbackContext value)
+    {
+        Debug.Log("ìŠ¤í˜ì´ìŠ¤ë°”?");
     }
 
     #endregion

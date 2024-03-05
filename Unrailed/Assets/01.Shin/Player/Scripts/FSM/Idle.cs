@@ -4,8 +4,6 @@ using UnityEngine;
 
 public sealed class Idle : PlayerSelector
 {
-    float time = 0;
-
     public Idle(PlayerBehavior player) : base(player)
     {
     }
@@ -17,14 +15,7 @@ public sealed class Idle : PlayerSelector
 
     public override void OnStateUpdate()
     {
-        time += Time.deltaTime;
         behavior.Move();
-
-        if(time >= 5f)
-        {
-            time = 0;
-            OnStateExit();
-        }
     }
 
     public override void OnStateExit()

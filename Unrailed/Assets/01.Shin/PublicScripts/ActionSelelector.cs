@@ -16,4 +16,6 @@ public abstract class ActionSelelector<T> where T : MonoBehaviour
     public abstract void OnStateUpdate();
 
     public abstract void OnStateExit();
+
+    public abstract void OnStateAction();
 }

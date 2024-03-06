@@ -14,7 +14,7 @@ public sealed class Interact : ActionSelelector<PlayerBehavior>
 
     public override void OnStateUpdate()
     {
-
+        behavior.Move();
     }
 
     public override void OnStateExit()
@@ -22,4 +22,13 @@ public sealed class Interact : ActionSelelector<PlayerBehavior>
         behavior.ChangeNode(playerState.Idle);
     }
 
+    public override void OnStateAction()
+    {
+        if(behavior.PickObject != null)
+        {
+            behavior.CleanHand();
+        }
+
+        OnStateExit();
+    }
 }

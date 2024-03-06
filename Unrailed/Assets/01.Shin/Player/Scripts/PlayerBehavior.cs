@@ -17,6 +17,9 @@ public class PlayerBehavior : FSM<playerState>
         new Dictionary<playerState, ActionSelelector<PlayerBehavior>>();
     CharacterController myController = null;
     PlayerInput input = null;
+    PickObject handObj = null;
+
+    public PickObject PickObject { get { return handObj; } }
 
     #region FSMState
 
@@ -56,13 +59,22 @@ public class PlayerBehavior : FSM<playerState>
     {
         playerAction.OnStateUpdate();
     }
-        
+
+    private void OnControllerColliderHit(ControllerColliderHit hit)
+    {
+        if(hit.transform.GetComponent<PickObject>())
+        {
+            if (handObj != null) { return; }
+
+            PickupObj(hit.transform.GetComponent<PickObject>().Interact());
+        }
+    }
     private void OnDisable()
     {
         // InputSystem 비활성화
         input.Disable();
         input.Player.Move3D.performed -= OnMove;
-        input.Player.Active.performed += Active;
+        input.Player.Active.performed -= Active;
         input.Player.Move3D.canceled -= CancelMove;
     }
 
@@ -103,15 +115,34 @@ public class PlayerBehavior : FSM<playerState>
 
     #region PublicResponsibility
 
+    // 현재 행동노드 교체, 교체된 행동노드의 Init 함수 호출
     public override void ChangeNode(playerState targetNode)
     {
         playerAction = actionNode[targetNode];
         playerAction.OnStateEnter();
     }
 
+    // Space키 입력시 InputSystem 이벤트로 호출되는 함수
     public void Active(InputAction.CallbackContext value)
     {
-        Debug.Log("스페이스바?");
+        // 현재 행동노드의 Action 함수를 호출
+        playerAction.OnStateAction();
+    }
+
+    public void PickupObj(PickObject obj)
+    {
+        if (handObj != null) { return; }
+
+        handObj = obj;
+        ChangeNode(playerState.Interact);
+
+    }
+
+    public void CleanHand()
+    {
+        if (handObj == null) { return; }
+
+        handObj = null;
     }
 
     #endregion

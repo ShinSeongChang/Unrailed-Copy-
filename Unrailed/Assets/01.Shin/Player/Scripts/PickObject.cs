@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class PickObject : MonoBehaviour
 {
-    public virtual void Interact()
+    public virtual PickObject Interact()
     {
-
+        return this;
     }
+
 }

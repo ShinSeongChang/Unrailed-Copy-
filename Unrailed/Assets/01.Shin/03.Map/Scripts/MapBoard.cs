@@ -13,11 +13,13 @@ public class MapBoard : MonoBehaviour
 
     Queue<MapTile> searchFrontier = new Queue<MapTile>();
 
-    // 지형 생성 메서드
-    public void Initialize(Vector2Int size)
-    {
+    MapTileContentFactory contentFactory = default;
 
+    // 지형 생성 메서드
+    public void Initialize(Vector2Int size, MapTileContentFactory contentFactory)
+    {
         this.size = size;
+        this.contentFactory = contentFactory;
         ground.localScale = new Vector3(size.x, size.y, 1);
             
         Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
@@ -53,24 +55,38 @@ public class MapBoard : MonoBehaviour
                 {
                     tile.isAlternative = !tile.isAlternative;
                 }
+
+                tile.Content = contentFactory.Get(TileType.Emtpy);
             }
         }
 
-        Debug.Log("생성된 갯수 : " + mapTiles.Length);
-        FindPaths();    
+        ToggleDestination(mapTiles[mapTiles.Length / 2]);
     }
 
-    void FindPaths()
+    private bool FindPaths()
     {
         // 모든 타일 경로 초기화
         foreach(MapTile tile in mapTiles)
         {
-            tile.ClearPath();
+            if(tile.Content.Type == TileType.Destination)
+            {
+                tile.BecomDestination();
+                searchFrontier.Enqueue(tile);
+            }
+            else
+            {
+                tile.ClearPath();
+            }
+        }
+
+        if(searchFrontier.Count == 0)
+        {
+            return false;
         }
 
         // 목표가 될 타일 지정
-        mapTiles[mapTiles.Length / 2].BecomDestination();
-        searchFrontier.Enqueue(mapTiles[mapTiles.Length / 2]);
+        //mapTiles[mapTiles.Length / 2].BecomDestination();
+        //searchFrontier.Enqueue(mapTiles[mapTiles.Length / 2]);
 
 
         // 03.11 시점에서 봤을 때 경로 찾는 것은 목표지점에서 부터 역순으로 자신의 이웃들에게 경로를 부여하는 듯 함
@@ -104,6 +120,8 @@ public class MapBoard : MonoBehaviour
         {
             tile.ShowPath();
         }
+
+        return true;
     }
 
 
@@ -125,5 +143,25 @@ public class MapBoard : MonoBehaviour
         }
 
         return null;
+    }
+
+    public void ToggleDestination(MapTile tile)
+    {
+        if(tile.Content.Type == TileType.Destination)
+        {
+            tile.Content = contentFactory.Get(TileType.Emtpy);
+
+            if(!FindPaths())
+            {
+                tile.Content = contentFactory.Get(TileType.Destination);
+                FindPaths();
+            }
+
+        }
+        else
+        {
+            tile.Content = contentFactory.Get(TileType.Destination);
+            FindPaths();
+        }
     }
 }

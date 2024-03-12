@@ -11,7 +11,7 @@ public class MapCreator : MonoBehaviour
 
     private void Awake()
     {
-        mapBoard.Initialize(boardSize);
+        mapBoard.Initialize(boardSize, factory);
     }
 
     private void OnValidate()
@@ -34,7 +34,7 @@ public class MapCreator : MonoBehaviour
 
         if(tile != null)
         {
-            tile.Content = factory.Get(TileType.Destination);
+            mapBoard.ToggleDestination(tile);
         }
     }
 

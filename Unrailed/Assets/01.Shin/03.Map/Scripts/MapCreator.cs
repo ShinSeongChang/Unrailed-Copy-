@@ -24,11 +24,25 @@ public class MapCreator : MonoBehaviour
     {
         if(Input.GetMouseButtonDown(0))
         {
+            HandleAlternativeTouch();
+        }
+        else if(Input.GetMouseButtonDown(1))
+        {
             HandleTouch();
         }
     }
 
     private void HandleTouch()
+    {
+        MapTile tile = mapBoard.GetTile(Touch);
+
+        if(tile != null)
+        {
+            mapBoard.ToggleWall(tile);
+        }
+    }
+
+    private void HandleAlternativeTouch()
     {
         MapTile tile = mapBoard.GetTile(Touch);
 

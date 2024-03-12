@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Net.Mime;
 using UnityEngine;
 
 public class MapBoard : MonoBehaviour
@@ -145,6 +146,7 @@ public class MapBoard : MonoBehaviour
         return null;
     }
 
+    // 목적지 타일을 설치, 경로 갱신하는 메서드
     public void ToggleDestination(MapTile tile)
     {
         if(tile.Content.Type == TileType.Destination)
@@ -162,6 +164,25 @@ public class MapBoard : MonoBehaviour
         {
             tile.Content = contentFactory.Get(TileType.Destination);
             FindPaths();
+        }
+    }
+
+    public void ToggleWall(MapTile tile)
+    {
+        if(tile.Content.Type == TileType.Wall)
+        {
+            tile.Content = contentFactory.Get(TileType.Emtpy);
+            FindPaths();
+        }
+        else if(tile.Content.Type == TileType.Emtpy)
+        {
+            tile.Content = contentFactory.Get(TileType.Wall);
+
+            if(!FindPaths())
+            {
+                tile.Content = contentFactory.Get(TileType.Emtpy);
+                FindPaths();
+            }
         }
     }
 }

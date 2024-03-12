@@ -7,6 +7,7 @@ public class MapBoard : MonoBehaviour
 {
     [SerializeField] Transform ground = default;
     [SerializeField] MapTile mapTile = default;
+    [SerializeField] Texture2D gridTexture = default;
 
     MapTile[] mapTiles = null;
 
@@ -15,6 +16,49 @@ public class MapBoard : MonoBehaviour
     Queue<MapTile> searchFrontier = new Queue<MapTile>();
 
     MapTileContentFactory contentFactory = default;
+
+    bool showPaths, showGrid;
+
+    public bool ShowPaths
+    {
+        get => showPaths;
+        set
+        {
+            showPaths = value;
+
+            if(showPaths)
+            {
+                foreach(MapTile tile in mapTiles)
+                {
+                    tile.ShowPath();
+                }
+            }
+            else
+            {
+                foreach (MapTile tile in mapTiles)
+                {
+                    tile.HidePath();
+                }
+            }
+        }
+    }
+
+    public bool ShowGrid
+    {
+        get => showGrid;
+        set
+        {
+            showGrid = value;
+            Material m = ground.GetComponent<MeshRenderer>().material;
+
+            if (showGrid) 
+            {
+                m.mainTexture = gridTexture;
+                m.SetTextureScale("_MainTex", size);
+            }
+            else { m.mainTexture = null; }
+        }
+    }
 
     // 지형 생성 메서드
     public void Initialize(Vector2Int size, MapTileContentFactory contentFactory)
@@ -74,10 +118,7 @@ public class MapBoard : MonoBehaviour
                 tile.BecomDestination();
                 searchFrontier.Enqueue(tile);
             }
-            else
-            {
-                tile.ClearPath();
-            }
+            else { tile.ClearPath(); }
         }
 
         if(searchFrontier.Count == 0)
@@ -117,9 +158,18 @@ public class MapBoard : MonoBehaviour
 
         }
 
-        foreach (MapTile tile in mapTiles)
+        foreach(MapTile tile in mapTiles)
         {
-            tile.ShowPath();
+            if (!tile.isPath) { return false; }
+        }
+
+        // 화살표 경로를 비출지 말지 정하는 bool값으로 판단
+        if(ShowPaths)
+        {
+            foreach (MapTile tile in mapTiles)
+            {
+                tile.ShowPath();
+            }
         }
 
         return true;
@@ -160,7 +210,7 @@ public class MapBoard : MonoBehaviour
             }
 
         }
-        else
+        else if(tile.Content.Type == TileType.Emtpy)
         {
             tile.Content = contentFactory.Get(TileType.Destination);
             FindPaths();

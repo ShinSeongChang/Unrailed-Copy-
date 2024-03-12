@@ -49,7 +49,8 @@ public class MapTile : MonoBehaviour
         // 이웃의 경로는 나 자신
         neighbor.nextOnPath = this;
 
-        return neighbor;
+        // 이웃의 타입이 벽이 아니라면 이웃을 반환, 벽이라면 null 반환
+        return neighbor.Content.Type != TileType.Wall ? neighbor : null;
     }
 
     #region PublicResponsiblity
@@ -104,6 +105,11 @@ public class MapTile : MonoBehaviour
             nextOnPath == east ? eastRotation :
             nextOnPath == south ? southRotation :
             westRotation;
+    }
+
+    public void HidePath()
+    {
+        arrow.gameObject.SetActive(false);
     }
 
     #endregion

@@ -30,6 +30,17 @@ public class MapCreator : MonoBehaviour
         {
             HandleTouch();
         }
+
+        // 화살표 경로 활성, 비활성
+        if (Input.GetKeyDown(KeyCode.V))
+        {
+            mapBoard.ShowPaths = !mapBoard.ShowPaths;
+        }
+
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            mapBoard.ShowGrid = !mapBoard.ShowGrid;
+        }
     }
 
     private void HandleTouch()

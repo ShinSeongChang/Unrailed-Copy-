@@ -15,6 +15,21 @@ public class MapTile : MonoBehaviour
     public bool isPath => distance != int.MaxValue;
     public bool isAlternative { get; set; }
 
+    TileContent content;
+    public TileContent Content
+    {
+        get => content;
+        set
+        {
+            Debug.Assert(value != null, "Null assigned to content!");
+
+            if (content != null) { content.Recycle(); }
+
+            content = value;
+            content.transform.localPosition = transform.localPosition;
+        }
+    }
+
     static Quaternion
         norhRotation = Quaternion.Euler(90f, 0f, 0f),
         southRotation = Quaternion.Euler(90f, 180f, 0f),

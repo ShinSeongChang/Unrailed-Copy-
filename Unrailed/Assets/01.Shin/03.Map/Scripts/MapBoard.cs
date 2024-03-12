@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 using UnityEngine;
-using UnityEngine.Tilemaps;
 
 public class MapBoard : MonoBehaviour
 {
@@ -22,7 +20,7 @@ public class MapBoard : MonoBehaviour
         this.size = size;
         ground.localScale = new Vector3(size.x, size.y, 1);
             
-        Vector2 offset = new Vector2(size.x - 1 * 0.5f, size.y - 1 * 0.5f);
+        Vector2 offset = new Vector2((size.x - 1) * 0.5f, (size.y - 1) * 0.5f);
 
         mapTiles = new MapTile[size.x * size.y];
 
@@ -58,6 +56,7 @@ public class MapBoard : MonoBehaviour
             }
         }
 
+        Debug.Log("생성된 갯수 : " + mapTiles.Length);
         FindPaths();    
     }
 
@@ -107,4 +106,24 @@ public class MapBoard : MonoBehaviour
         }
     }
 
+
+
+    // 몇번째 타일을 클릭하였는지 반환해주는 메서드
+    public MapTile GetTile(Ray ray)
+    {        
+        if(Physics.Raycast(ray, out RaycastHit hit))
+        {
+            int x = (int)(hit.point.x + size.x * 0.5f);
+            int y = (int)(hit.point.z + size.y * 0.5f);
+
+            // 지정한 크기 안의 범위일때만 
+            if (x >= 0 && x < size.x && y >= 0 && y < size.y)
+            {
+                Debug.Log(x + y * size.x + "번째 타일");
+                return mapTiles[x + y * size.x];
+            }
+        }
+
+        return null;
+    }
 }

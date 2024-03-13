@@ -13,6 +13,7 @@ public class MapTileContentFactory : ScriptableObject
     [SerializeField] TileContent destinationTile = default;
     [SerializeField] TileContent emptyTile = default;
     [SerializeField] TileContent wallTile = default;
+    [SerializeField] TileContent spawnTile = default;
 
     private TileContent Get(TileContent prefab)
     {
@@ -59,10 +60,12 @@ public class MapTileContentFactory : ScriptableObject
         {
             case TileType.Destination:
                 return Get(destinationTile);
-            case TileType.Emtpy:
+            case TileType.Empty:
                 return Get(emptyTile);
             case TileType.Wall:
                 return Get(wallTile);
+            case TileType.SpawnPoint:
+                return Get(spawnTile);
         }
 
         Debug.Assert(false, "Unsupported Type : " + type);

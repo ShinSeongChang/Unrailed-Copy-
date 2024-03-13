@@ -17,6 +17,8 @@ public class MapBoard : MonoBehaviour
 
     MapTileContentFactory contentFactory = default;
 
+    List<MapTile> spawnPoints = new List<MapTile>();
+
     bool showPaths, showGrid;
 
     public bool ShowPaths
@@ -101,11 +103,12 @@ public class MapBoard : MonoBehaviour
                     tile.isAlternative = !tile.isAlternative;
                 }
 
-                tile.Content = contentFactory.Get(TileType.Emtpy);
+                tile.Content = contentFactory.Get(TileType.Empty);
             }
         }
 
         ToggleDestination(mapTiles[mapTiles.Length / 2]);
+        ToggleSpawnPoint(mapTiles[0]);
     }
 
     private bool FindPaths()
@@ -201,7 +204,7 @@ public class MapBoard : MonoBehaviour
     {
         if(tile.Content.Type == TileType.Destination)
         {
-            tile.Content = contentFactory.Get(TileType.Emtpy);
+            tile.Content = contentFactory.Get(TileType.Empty);
 
             if(!FindPaths())
             {
@@ -210,7 +213,7 @@ public class MapBoard : MonoBehaviour
             }
 
         }
-        else if(tile.Content.Type == TileType.Emtpy)
+        else if(tile.Content.Type == TileType.Empty)
         {
             tile.Content = contentFactory.Get(TileType.Destination);
             FindPaths();
@@ -221,18 +224,35 @@ public class MapBoard : MonoBehaviour
     {
         if(tile.Content.Type == TileType.Wall)
         {
-            tile.Content = contentFactory.Get(TileType.Emtpy);
+            tile.Content = contentFactory.Get(TileType.Empty);
             FindPaths();
         }
-        else if(tile.Content.Type == TileType.Emtpy)
+        else if(tile.Content.Type == TileType.Empty)
         {
             tile.Content = contentFactory.Get(TileType.Wall);
 
             if(!FindPaths())
             {
-                tile.Content = contentFactory.Get(TileType.Emtpy);
+                tile.Content = contentFactory.Get(TileType.Empty);
                 FindPaths();
             }
+        }
+    }
+
+    public void ToggleSpawnPoint(MapTile tile)
+    {
+        if (tile.Content.Type == TileType.SpawnPoint)
+        {
+            if (spawnPoints.Count > 1)
+            {
+                spawnPoints.Remove(tile);
+                tile.Content = contentFactory.Get(TileType.Empty);
+            }
+        }
+        else if (tile.Content.Type == TileType.Empty)
+        {
+            tile.Content = contentFactory.Get(TileType.SpawnPoint);
+            spawnPoints.Add(tile);
         }
     }
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public enum TileType
 {
-    Emtpy, Destination, Wall
+    Empty, Destination, Wall, SpawnPoint
 }
 public class TileContent : MonoBehaviour
 {

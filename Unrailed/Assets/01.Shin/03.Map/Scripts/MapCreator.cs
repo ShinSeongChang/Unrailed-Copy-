@@ -59,7 +59,8 @@ public class MapCreator : MonoBehaviour
 
         if(tile != null)
         {
-            mapBoard.ToggleDestination(tile);
+            if (Input.GetKey(KeyCode.LeftShift)) { mapBoard.ToggleDestination(tile); }
+            else {  mapBoard.ToggleSpawnPoint(tile); }                            
         }
     }
 

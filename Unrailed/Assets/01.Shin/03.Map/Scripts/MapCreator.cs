@@ -6,12 +6,19 @@ public class MapCreator : MonoBehaviour
 {
     [SerializeField] Vector2Int boardSize = new Vector2Int(11, 11);
     [SerializeField] MapBoard mapBoard = default;
-    [SerializeField] MapTileContentFactory factory = default;
+    [SerializeField] MapTileContentFactory tileFactory = default;
+    [SerializeField] EnemyFactory enemyFactory = default;
+
+    EnemyCollection enemies = new EnemyCollection();
     Ray Touch => Camera.main.ScreenPointToRay(Input.mousePosition);
+
+    [SerializeField, Range(0.1f, 10f)]
+    float spawnSpeed = 1f;
+    float spawnProgress;
 
     private void Awake()
     {
-        mapBoard.Initialize(boardSize, factory);
+        mapBoard.Initialize(boardSize, tileFactory);
     }
 
     private void OnValidate()
@@ -41,6 +48,27 @@ public class MapCreator : MonoBehaviour
         {
             mapBoard.ShowGrid = !mapBoard.ShowGrid;
         }
+
+        enemies.GameUpdate();
+    }
+
+    private void FixedUpdate()
+    {
+        spawnProgress += spawnSpeed * Time.deltaTime;
+        while (spawnProgress >= 1f)
+        {
+            spawnProgress -= 1f;
+            SpawnEnemy();
+        }
+    }
+
+    void SpawnEnemy()
+    {
+        MapTile spawnPoint =
+            mapBoard.GetSpawnPoint(Random.Range(0, mapBoard.SpawnPointCount));
+        Enemy enemy = enemyFactory.Get();
+        enemy.SpawnOn(spawnPoint);
+        enemies.Add(enemy);
     }
 
     private void HandleTouch()

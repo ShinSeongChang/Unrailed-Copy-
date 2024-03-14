@@ -217,7 +217,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   boardSize: {x: 11, y: 11}
   mapBoard: {fileID: 284861356}
-  factory: {fileID: 11400000, guid: 5815028730a89404c9ccd1dab3855a54, type: 2}
+  tileFactory: {fileID: 11400000, guid: 5815028730a89404c9ccd1dab3855a54, type: 2}
+  enemyFactory: {fileID: 11400000, guid: caeead7184c06cb4e8de495d933011a9, type: 2}
+  spawnSpeed: 4
 --- !u!1001 &633070242
 PrefabInstance:
   m_ObjectHideFlags: 0

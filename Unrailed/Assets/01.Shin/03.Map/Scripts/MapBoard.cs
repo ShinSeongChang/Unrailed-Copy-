@@ -62,6 +62,8 @@ public class MapBoard : MonoBehaviour
         }
     }
 
+    public int SpawnPointCount => spawnPoints.Count;
+
     // 지형 생성 메서드
     public void Initialize(Vector2Int size, MapTileContentFactory contentFactory)
     {
@@ -254,5 +256,10 @@ public class MapBoard : MonoBehaviour
             tile.Content = contentFactory.Get(TileType.SpawnPoint);
             spawnPoints.Add(tile);
         }
+    }
+
+    public MapTile GetSpawnPoint(int idx)
+    {
+        return spawnPoints[idx];
     }
 }

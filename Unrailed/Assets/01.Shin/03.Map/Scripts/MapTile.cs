@@ -1,6 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+
+public enum Direction
+{
+    North, South, East, West
+}
 
 public class MapTile : MonoBehaviour
 {
@@ -31,7 +34,11 @@ public class MapTile : MonoBehaviour
     }
 
     public MapTile NextOnPath => nextOnPath;
-   
+
+    // 적들이 가장자리를 따라 이동하게 하기위해 계산되는 값
+    public Vector3 ExitPoint { get; private set; }
+
+    public Direction PathDirection { get; private set; }
 
     static Quaternion
         norhRotation = Quaternion.Euler(90f, 0f, 0f),
@@ -39,7 +46,7 @@ public class MapTile : MonoBehaviour
         eastRotation = Quaternion.Euler(90f, 90f, 0f),
         westRotation = Quaternion.Euler(90f, 270f, 0f);
 
-    MapTile GrowPathTo(MapTile neighbor)
+    MapTile GrowPathTo(MapTile neighbor, Direction direction)
     {
         Debug.Assert(isPath, "No Neighbor!");
 
@@ -51,6 +58,11 @@ public class MapTile : MonoBehaviour
 
         // 이웃의 경로는 나 자신
         neighbor.nextOnPath = this;
+
+        // 이웃 타일의 가장자리 찾아내기
+        neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
+
+        neighbor.PathDirection = direction;
 
         // 이웃의 타입이 벽이 아니라면 이웃을 반환, 벽이라면 null 반환
         return neighbor.Content.Type != TileType.Wall ? neighbor : null;
@@ -86,12 +98,13 @@ public class MapTile : MonoBehaviour
     {
         distance = 0;
         nextOnPath = null;
+        ExitPoint = transform.localPosition;
     }
 
-    public MapTile GrowPathNorth() => GrowPathTo(north);
-    public MapTile GrowPathSouth() => GrowPathTo(south);
-    public MapTile GrowPathEast() => GrowPathTo(east);
-    public MapTile GrowPathWest() => GrowPathTo(west);
+    public MapTile GrowPathNorth() => GrowPathTo(north, Direction.South);
+    public MapTile GrowPathSouth() => GrowPathTo(south, Direction.North);
+    public MapTile GrowPathEast() => GrowPathTo(east, Direction.West);
+    public MapTile GrowPathWest() => GrowPathTo(west, Direction.East);
 
     // 화살표 타일이 어느방향을 바라봐야 하는지 정의해주는 메서드
     public void ShowPath()

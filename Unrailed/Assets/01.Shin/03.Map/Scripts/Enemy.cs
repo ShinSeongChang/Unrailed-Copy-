@@ -25,6 +25,8 @@ public class Enemy : MonoBehaviour
         tileTo = tile.NextOnPath;
         positionFrom = tileFrom.transform.localPosition;
         positionTo = tileTo.transform.localPosition;
+        positionTo = tileFrom.ExitPoint;
+        transform.localRotation = tileFrom.PathDirection.GetRotation();
         progress = 0f;
     }
 
@@ -44,6 +46,8 @@ public class Enemy : MonoBehaviour
 
             positionFrom = positionTo;
             positionTo = tileTo.transform.localPosition;
+            positionTo = tileFrom.ExitPoint;
+            transform.localRotation = tileFrom.PathDirection.GetRotation();
             progress -= 1f;
         }
 

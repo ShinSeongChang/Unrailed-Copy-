@@ -1,10 +1,5 @@
 using UnityEngine;
 
-public enum Direction
-{
-    North, South, East, West
-}
-
 public class MapTile : MonoBehaviour
 {
     [SerializeField] Transform arrow = default;

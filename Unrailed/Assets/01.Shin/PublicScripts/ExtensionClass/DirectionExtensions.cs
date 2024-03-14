@@ -2,7 +2,7 @@ using UnityEngine;
 
 public enum Direction
 {
-    North, South, East, West
+    North, East, South, West
 }
 
 public enum DirectionChange
@@ -11,11 +11,20 @@ public enum DirectionChange
 }
 public static class DirectionExtensions
 {
-    static Quaternion[] rotations = {
+    static Quaternion[] rotations = new Quaternion[4]
+    {
         Quaternion.identity,
         Quaternion.Euler(0f, 90f, 0f),
         Quaternion.Euler(0f, 180f, 0f),
         Quaternion.Euler(0f, 270f, 0f)
+    };
+
+    static Vector3[] halfVectors = new Vector3[4]
+    {
+        Vector3.forward * 0.5f,
+        Vector3.right * 0.5f,
+        Vector3.back * 0.5f,
+        Vector3.left * 0.5f
     };
 
     public static Quaternion GetRotation(this Direction direction)
@@ -43,6 +52,11 @@ public static class DirectionExtensions
     public static float GetAngle(this Direction direction)
     {
         return (float)direction * 90f;
+    }
+
+    public static Vector3 GetHalfVector(this Direction direction)
+    {
+        return halfVectors[(int)direction];
     }
 }
 

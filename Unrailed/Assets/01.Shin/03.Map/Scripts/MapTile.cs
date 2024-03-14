@@ -55,7 +55,7 @@ public class MapTile : MonoBehaviour
         neighbor.nextOnPath = this;
 
         // 이웃 타일의 가장자리 찾아내기
-        neighbor.ExitPoint = (neighbor.transform.localPosition + transform.localPosition) * 0.5f;
+        neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
 
         neighbor.PathDirection = direction;
 

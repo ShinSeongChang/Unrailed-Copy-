@@ -30,6 +30,9 @@ public class MapTile : MonoBehaviour
         }
     }
 
+    public MapTile NextOnPath => nextOnPath;
+   
+
     static Quaternion
         norhRotation = Quaternion.Euler(90f, 0f, 0f),
         southRotation = Quaternion.Euler(90f, 180f, 0f),

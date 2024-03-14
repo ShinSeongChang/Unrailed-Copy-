@@ -3,6 +3,9 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     EnemyFactory originFactory;
+    MapTile tileFrom, tileTo;
+    Vector3 positionFrom, positionTo;
+    float progress;
 
     public EnemyFactory OriginFactory
     {
@@ -16,12 +19,35 @@ public class Enemy : MonoBehaviour
 
     public void SpawnOn(MapTile tile)
     {
-        transform.localPosition = tile.transform.localPosition;
+        Debug.Assert(tile.NextOnPath != null, "Nowhere to go!", this);
+
+        tileFrom = tile;
+        tileTo = tile.NextOnPath;
+        positionFrom = tileFrom.transform.localPosition;
+        positionTo = tileTo.transform.localPosition;
+        progress = 0f;
     }
 
     public bool GameUpdate()
     {
-        transform.localPosition += Vector3.forward * Time.deltaTime;
+        progress += Time.deltaTime;
+        while (progress >= 1f)
+        {
+            tileFrom = tileTo;
+            tileTo = tileTo.NextOnPath;
+
+            if (tileTo == null)
+            {
+                OriginFactory.Reclaim(this);
+                return false;
+            }
+
+            positionFrom = positionTo;
+            positionTo = tileTo.transform.localPosition;
+            progress -= 1f;
+        }
+
+        transform.localPosition = Vector3.LerpUnclamped(positionFrom, positionTo, progress);
         return true;
     }
 }

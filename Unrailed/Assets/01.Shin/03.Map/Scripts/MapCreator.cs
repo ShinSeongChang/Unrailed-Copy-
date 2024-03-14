@@ -10,6 +10,7 @@ public class MapCreator : MonoBehaviour
     [SerializeField] EnemyFactory enemyFactory = default;
 
     EnemyCollection enemies = new EnemyCollection();
+
     Ray Touch => Camera.main.ScreenPointToRay(Input.mousePosition);
 
     [SerializeField, Range(0.1f, 10f)]

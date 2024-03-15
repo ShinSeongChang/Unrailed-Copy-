@@ -131,11 +131,6 @@ public class MapBoard : MonoBehaviour
             return false;
         }
 
-        // 목표가 될 타일 지정
-        //mapTiles[mapTiles.Length / 2].BecomDestination();
-        //searchFrontier.Enqueue(mapTiles[mapTiles.Length / 2]);
-
-
         // 03.11 시점에서 봤을 때 경로 찾는 것은 목표지점에서 부터 역순으로 자신의 이웃들에게 경로를 부여하는 듯 함
         while (searchFrontier.Count > 0)
         {

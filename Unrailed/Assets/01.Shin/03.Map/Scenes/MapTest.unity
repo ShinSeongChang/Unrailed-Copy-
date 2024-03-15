@@ -215,7 +215,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: be0f66ae38ac3cf49ac0eef29c526a02, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  boardSize: {x: 11, y: 11}
+  boardSize: {x: 20, y: 11}
   mapBoard: {fileID: 284861356}
   tileFactory: {fileID: 11400000, guid: 5815028730a89404c9ccd1dab3855a54, type: 2}
   enemyFactory: {fileID: 11400000, guid: caeead7184c06cb4e8de495d933011a9, type: 2}

@@ -12,4 +12,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: db74629f5e7c25f4d9763ad925ab9cdf, type: 3}
   m_Name: EnemyFatory
   m_EditorClassIdentifier: 
-  prefab: {fileID: 4939242690999781992, guid: d06159fa2307aab459fe4b6c0d95b320, type: 3}
+  prefab: {fileID: 7658853323791962419, guid: 5252728fdff19d64ab4fec83d53d2b7e, type: 3}

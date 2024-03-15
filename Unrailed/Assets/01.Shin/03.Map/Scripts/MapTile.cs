@@ -12,6 +12,7 @@ public class MapTile : MonoBehaviour
     // 즉 무한대의 거리가 아니라면 경로가 존재한다 = true
     public bool isPath => distance != int.MaxValue;
     public bool isAlternative { get; set; }
+    public bool isRail { get; set; }
 
     TileContent content;
     public TileContent Content
@@ -63,6 +64,28 @@ public class MapTile : MonoBehaviour
         return neighbor.Content.Type != TileType.Wall ? neighbor : null;
     }
 
+    MapTile GrowPathToTrain(MapTile neighbor, Direction direction)
+    {
+        Debug.Assert(isPath, "No Neighbor!");
+
+        // 경로가 없거나, 전달받은 이웃이 없거나, 이웃의 경로가 없다면 null 반환
+        if (!isPath || neighbor == null || neighbor.isPath) { return null; }
+
+        // 이웃의 경로 갱신(이동할 수 있는 칸이 있냐 없냐)
+        neighbor.distance = distance + 1;
+
+        // 이웃의 경로는 나 자신
+        neighbor.nextOnPath = this;
+
+        // 이웃 타일의 가장자리 찾아내기
+        neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
+
+        neighbor.PathDirection = direction;
+
+        // 이웃의 타입이 벽이 아니라면 이웃을 반환, 벽이라면 null 반환
+        return neighbor.Content.Type == TileType.Rail ? neighbor : null;
+    }
+
     #region PublicResponsiblity
 
     // { 서로 대칭관계의 방향 이웃 정의해주기
@@ -99,7 +122,12 @@ public class MapTile : MonoBehaviour
     public MapTile GrowPathNorth() => GrowPathTo(north, Direction.South);
     public MapTile GrowPathSouth() => GrowPathTo(south, Direction.North);
     public MapTile GrowPathEast() => GrowPathTo(east, Direction.West);
-    public MapTile GrowPathWest() => GrowPathTo(west, Direction.East);
+    public MapTile GrowPathWest() => GrowPathTo(west, Direction.East); 
+
+    public MapTile GrowPathNorthT() => GrowPathToTrain(north, Direction.South);
+    public MapTile GrowPathSouthT() => GrowPathToTrain(south, Direction.North);
+    public MapTile GrowPathEastT() => GrowPathToTrain(east, Direction.West);
+    public MapTile GrowPathWestT() => GrowPathToTrain(west, Direction.East);
 
     // 화살표 타일이 어느방향을 바라봐야 하는지 정의해주는 메서드
     public void ShowPath()

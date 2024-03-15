@@ -7,6 +7,7 @@ public class MapTileContentFactory : GameObjectFactory
     [SerializeField] TileContent emptyTile = default;
     [SerializeField] TileContent wallTile = default;
     [SerializeField] TileContent spawnTile = default;
+    [SerializeField] TileContent railTile = default;
 
     private TileContent Get(TileContent prefab)
     {
@@ -34,6 +35,8 @@ public class MapTileContentFactory : GameObjectFactory
                 return Get(wallTile);
             case TileType.SpawnPoint:
                 return Get(spawnTile);
+            case TileType.Rail:
+                return Get(railTile);
         }
 
         Debug.Assert(false, "Unsupported Type : " + type);

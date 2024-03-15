@@ -253,8 +253,35 @@ public class MapBoard : MonoBehaviour
         }
     }
 
+    // 열차 레일 까는 메서드 작업중
+    public void ToggleRail(MapTile tile)
+    {
+        // 이미 깔려있다면
+        if (tile.Content.Type == TileType.Rail)
+        {
+            tile.Content = contentFactory.Get(TileType.Empty);
+            //FindPaths();
+        }
+        // 설치가 안되어 있는 타일이라면
+        else if (tile.Content.Type == TileType.Empty)
+        {
+            tile.Content = contentFactory.Get(TileType.Rail);
+
+            //if (!FindPaths())
+            //{
+            //    tile.Content = contentFactory.Get(TileType.Empty);
+            //    FindPaths();
+            //}
+        }
+    }
+
+
+
     public MapTile GetSpawnPoint(int idx)
     {
         return spawnPoints[idx];
     }
+
+    public MapTile GetStartPoint() => mapTiles[0];
+
 }

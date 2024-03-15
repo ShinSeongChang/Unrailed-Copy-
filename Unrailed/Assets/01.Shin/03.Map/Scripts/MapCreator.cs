@@ -8,6 +8,7 @@ public class MapCreator : MonoBehaviour
     [SerializeField] MapBoard mapBoard = default;
     [SerializeField] MapTileContentFactory tileFactory = default;
     [SerializeField] EnemyFactory enemyFactory = default;
+    [SerializeField] Train train = default;
 
     EnemyCollection enemies = new EnemyCollection();
 
@@ -20,6 +21,7 @@ public class MapCreator : MonoBehaviour
     private void Awake()
     {
         mapBoard.Initialize(boardSize, tileFactory);
+        train.SpawnOn(mapBoard.GetStartPoint());
     }
 
     private void OnValidate()
@@ -89,7 +91,7 @@ public class MapCreator : MonoBehaviour
         if(tile != null)
         {
             if (Input.GetKey(KeyCode.LeftShift)) { mapBoard.ToggleDestination(tile); }
-            else {  mapBoard.ToggleSpawnPoint(tile); }                            
+            else {  mapBoard.ToggleRail(tile); }                            
         }
     }
 

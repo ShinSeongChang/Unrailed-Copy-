@@ -18,13 +18,17 @@ public class Train : MonoBehaviour
 
         tileFrom = tile;
         tileTo = tile.NextOnPath;
+        transform.position = tileFrom.transform.position;
         progress = 0f;
         PrepareIntro();
     }
 
     public bool GameUpdate()
     {
+        if(tileTo.Content.Type != TileType.Rail) { return false; }
+
         progress += Time.deltaTime * progressFactor;
+
 
         while (progress >= 1f)
         {
@@ -37,7 +41,7 @@ public class Train : MonoBehaviour
             }
 
             progress = (progress - 1f) / progressFactor;
-            //PrepareNextState();
+            PrepareNextState();
             progress *= progressFactor;
         }
 

@@ -21,6 +21,7 @@ public class MapCreator : MonoBehaviour
     private void Awake()
     {
         mapBoard.Initialize(boardSize, tileFactory);
+
         train.SpawnOn(mapBoard.GetStartPoint());
     }
 
@@ -52,7 +53,8 @@ public class MapCreator : MonoBehaviour
             mapBoard.ShowGrid = !mapBoard.ShowGrid;
         }
 
-        enemies.GameUpdate();
+        //enemies.GameUpdate();
+        train.GameUpdate();
     }
 
     private void FixedUpdate()
@@ -61,7 +63,9 @@ public class MapCreator : MonoBehaviour
         while (spawnProgress >= 1f)
         {
             spawnProgress -= 1f;
-            SpawnEnemy();
+
+            // 적군 지속생성 막음
+            //SpawnEnemy();
         }
     }
 

@@ -89,15 +89,19 @@ public class MapBoard : MonoBehaviour
                 // { 맵 생성시 이웃들 정의해주기
                 if(x > 0)
                 {
+                    // x축 이웃 정해주기
                     MapTile.MakeEastWestNeighbors(tile, mapTiles[i - 1]);
                 }
 
                 if(y > 0)
                 {
+                    // y축 이웃 정해주기
                     MapTile.MakeNorthSouthNeighbors(tile, mapTiles[i - size.x]);
                 }
                 // } 맵 생성시 이웃들 정의해주기
 
+
+                // x값이 짝수인지 아닌지 비트연산
                 tile.isAlternative = (x & 1) == 0;
 
                 if((y & 1) == 0)
@@ -118,27 +122,34 @@ public class MapBoard : MonoBehaviour
         // 모든 타일 경로 초기화
         foreach(MapTile tile in mapTiles)
         {
+            // 최종 목적지 타일 찾아서 가장먼저 Queue에 넣기
             if(tile.Content.Type == TileType.Destination)
             {
                 tile.BecomDestination();
                 searchFrontier.Enqueue(tile);
             }
+            // 나머지 타일은 경로 초기화
             else { tile.ClearPath(); }
         }
 
+        // 최종 목적지가 없으면 경로갱신 false
         if(searchFrontier.Count == 0)
         {
             return false;
         }
 
-        // 03.11 시점에서 봤을 때 경로 찾는 것은 목표지점에서 부터 역순으로 자신의 이웃들에게 경로를 부여하는 듯 함
         while (searchFrontier.Count > 0)
         {
+            // 최종 목적지 타일 꺼내기
             MapTile tile = searchFrontier.Dequeue();
 
+            // 갱신한 이웃이 없을 때 == null일 경우 방어
             if(tile != null)
             {                
-                // if문이 서로 반대의 순서, 지그재그 방식으로 길찾기 진행
+                // 해당 타일의 4이웃 타일 방문하여 내 자신의 정보를 이용하여 거리 갱신, Queue 갱신
+                // 이후 이웃이 모두 없어질때까지 해당 반복문 반복
+                // 특정 불값을 이용해서 검색조건을 서로 대칭이 되게 하여 대각선 이동도 가능하게 함
+                // 해당 부분은 Initialize() 메서드의 isAlternative를 판단하는 비트연산을 이해 해야함
                 if(tile.isAlternative)
                 {
                     searchFrontier.Enqueue(tile.GrowPathNorth());
@@ -158,10 +169,11 @@ public class MapBoard : MonoBehaviour
 
         }
 
-        foreach(MapTile tile in mapTiles)
-        {
-            if (!tile.isPath) { return false; }
-        }
+        // 타일 모두 순회중 이동불가 타일 존재시 false
+        //foreach(MapTile tile in mapTiles)
+        //{
+        //    if (!tile.isPath) { return false; }
+        //}
 
         // 화살표 경로를 비출지 말지 정하는 bool값으로 판단
         if(ShowPaths)
@@ -219,15 +231,22 @@ public class MapBoard : MonoBehaviour
 
     public void ToggleWall(MapTile tile)
     {
+        // 이미 벽이 설치되어 있다면
         if(tile.Content.Type == TileType.Wall)
         {
+            // 벽 제거
             tile.Content = contentFactory.Get(TileType.Empty);
+
+            // 경로 갱신
             FindPaths();
         }
+        // 비어있는 타일이라면
         else if(tile.Content.Type == TileType.Empty)
         {
+            // 벽타일 인스턴스화, 설치
             tile.Content = contentFactory.Get(TileType.Wall);
 
+            // 해당 위치에 설치시 이동불가 경로라면
             if(!FindPaths())
             {
                 tile.Content = contentFactory.Get(TileType.Empty);
@@ -260,7 +279,7 @@ public class MapBoard : MonoBehaviour
         if (tile.Content.Type == TileType.Rail)
         {
             tile.Content = contentFactory.Get(TileType.Empty);
-            //FindPaths();
+            FindPaths();
         }
         // 설치가 안되어 있는 타일이라면
         else if (tile.Content.Type == TileType.Empty)

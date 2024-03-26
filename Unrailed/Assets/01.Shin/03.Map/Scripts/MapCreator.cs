@@ -21,8 +21,7 @@ public class MapCreator : MonoBehaviour
     private void Awake()
     {
         mapBoard.Initialize(boardSize, tileFactory);
-
-        train.SpawnOn(mapBoard.GetStartPoint());
+        Invoke("StartMethod", 5f);
     }
 
     private void OnValidate()
@@ -53,20 +52,19 @@ public class MapCreator : MonoBehaviour
             mapBoard.ShowGrid = !mapBoard.ShowGrid;
         }
 
-        //enemies.GameUpdate();
-        train.GameUpdate();
     }
 
     private void FixedUpdate()
     {
-        spawnProgress += spawnSpeed * Time.deltaTime;
-        while (spawnProgress >= 1f)
-        {
-            spawnProgress -= 1f;
+        //spawnProgress += spawnSpeed * Time.deltaTime;
+        //while (spawnProgress >= 1f)
+        //{
+        //    spawnProgress -= 1f;
 
-            // 적군 지속생성 막음
-            //SpawnEnemy();
-        }
+        //    // 적군 지속생성 막음
+        //    //SpawnEnemy();
+        //}
+        train.GameUpdate();
     }
 
     void SpawnEnemy()
@@ -97,6 +95,12 @@ public class MapCreator : MonoBehaviour
             if (Input.GetKey(KeyCode.LeftShift)) { mapBoard.ToggleDestination(tile); }
             else {  mapBoard.ToggleRail(tile); }                            
         }
+    }
+
+    void StartMethod()
+    {
+
+        train.SpawnOn(mapBoard.GetStartPoint(), mapBoard);
     }
 
 }

@@ -113,8 +113,8 @@ public class MapBoard : MonoBehaviour
             }
         }
 
-        ToggleDestination(mapTiles[mapTiles.Length / 2]);
-        ToggleSpawnPoint(mapTiles[0]);
+        ToggleDestination(mapTiles[mapTiles.Length - 1]);
+        //ToggleSpawnPoint(mapTiles[0]);
     }
 
     private bool FindPaths()
@@ -187,8 +187,6 @@ public class MapBoard : MonoBehaviour
         return true;
     }
 
-
-
     // 몇번째 타일을 클릭하였는지 반환해주는 메서드
     public MapTile GetTile(Ray ray)
     {        
@@ -204,6 +202,23 @@ public class MapBoard : MonoBehaviour
                 return mapTiles[x + y * size.x];
             }
         }
+
+        return null;
+    }
+
+
+    // 몇번째 타일을 클릭하였는지 반환해주는 메서드
+    public MapTile GetTile(Vector3 vec)
+    {
+        int x = (int)(vec.x + size.x * 0.5f);
+        int y = (int)(vec.z + size.y * 0.5f);
+
+        // 지정한 크기 안의 범위일때만 
+        if (x >= 0 && x < size.x && y >= 0 && y < size.y)
+        {
+            Debug.Log(x + y * size.x + "번째 타일");
+            return mapTiles[x + y * size.x];
+        }        
 
         return null;
     }

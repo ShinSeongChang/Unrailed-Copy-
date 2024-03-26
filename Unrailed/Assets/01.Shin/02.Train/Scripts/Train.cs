@@ -2,6 +2,7 @@ using UnityEngine;
 
 public class Train : MonoBehaviour
 {
+    MapBoard board;
     MapTile tileFrom, tileTo;
     Vector3 positionFrom, positionTo;
     float progress, progressFactor;
@@ -12,23 +13,34 @@ public class Train : MonoBehaviour
 
     [SerializeField] Transform model = default;
 
-    public void SpawnOn(MapTile tile)
+    public void SpawnOn(MapTile tile, MapBoard board)
     {
         Debug.Assert(tile.NextOnPath != null, "Nowhere to go!", this);
 
+        this.board = board;
         tileFrom = tile;
-        tileTo = tile.NextOnPath;
+        tileTo = tile.GetRailTile();
         transform.position = tileFrom.transform.position;
         progress = 0f;
         PrepareIntro();
+        FindPathsRail();
+    }
+
+    private void FindPathsRail()
+    {
+        MapTile tile = board.GetTile(transform.position);
+
+        tileTo = tile.GetRailTile();
+
+        if (tileTo != null)
+        {
+            Debug.Log("다음 타일 : " + board.GetTile(tileTo.transform.position));
+        }
     }
 
     public bool GameUpdate()
     {
-        if(tileTo.Content.Type != TileType.Rail) { return false; }
-
         progress += Time.deltaTime * progressFactor;
-
 
         while (progress >= 1f)
         {

@@ -69,14 +69,10 @@ public class MapTile : MonoBehaviour
     {
         Debug.Assert(isPath, "No Neighbor!");
 
+        if(content.Type != TileType.Rail) { return null; }
+
         // 경로가 없거나, 전달받은 이웃이 없거나, 이웃의 경로가 없다면 null 반환
         if (!isPath || neighbor == null || neighbor.isPath) { return null; }
-
-        // 이웃의 경로 갱신(이동할 수 있는 칸이 있냐 없냐)
-        neighbor.distance = distance + 1;
-
-        // 이웃의 경로는 나 자신
-        neighbor.nextOnPath = this;
 
         // 이웃 타일의 가장자리 찾아내기
         neighbor.ExitPoint = neighbor.transform.localPosition + direction.GetHalfVector();
@@ -128,10 +124,6 @@ public class MapTile : MonoBehaviour
     public MapTile GrowPathEast() => GrowPathTo(east, Direction.West);
     public MapTile GrowPathWest() => GrowPathTo(west, Direction.East); 
 
-    public MapTile GrowPathNorthT() => GrowPathToTrain(north, Direction.South);
-    public MapTile GrowPathSouthT() => GrowPathToTrain(south, Direction.North);
-    public MapTile GrowPathEastT() => GrowPathToTrain(east, Direction.West);
-    public MapTile GrowPathWestT() => GrowPathToTrain(west, Direction.East);
 
     // 화살표 타일이 어느방향을 바라봐야 하는지 정의해주는 메서드
     // TODO : 해당 메서드를 이용해서 나중에 레일 회전방향 잡아주면 될 듯
@@ -156,6 +148,28 @@ public class MapTile : MonoBehaviour
     public void HidePath()
     {
         arrow.gameObject.SetActive(false);
+    }
+
+    public MapTile GetRailTile()
+    {
+        if(north != null)
+        {
+            if(north.content.Type == TileType.Rail) { return north; }
+        }
+        else if (east != null)
+        {
+            if(east.content.Type == TileType.Rail) {  return east; }
+        }
+        else if (south != null)
+        {
+            if(south.content.Type == TileType.Rail) {  return south; }
+        }
+        else if (west != null)
+        {
+            if(west.content.Type == TileType.Rail) {  return west; }
+        }
+
+        return null;
     }
 
     #endregion
